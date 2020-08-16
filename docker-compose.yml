@@ -10,7 +10,7 @@ services:
        - user-service
        - assets-service
     volumes:
-      - ./reverse_proxy/config:/etc/nginx
+      - ../reverse_proxy/config:/etc/nginx
     ports:
       - 80:80
 
@@ -19,9 +19,9 @@ services:
     image: user-service
     container_name: user-service
     build:
-      context: ./users
+      context: ../users
     env_file:
-      - ./users/env.list
+      - ../users/env.list
     ports:
       - 8080:8080
     restart: on-failure
@@ -31,9 +31,9 @@ services:
     image: assets-service
     container_name: assets-service
     build:
-      context: ./assets
+      context: ../assets
     env_file:
-      - ./assets/env.list
+      - ../assets/env.list
     depends_on:
         - user-service
     ports:
