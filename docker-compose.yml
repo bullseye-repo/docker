@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+
+  # Proxies requests to internal services
+  reverse-proxy:
+    image: nginx:1.18.0
+    container_name: reverse_proxy_xchange
+    depends_on:
+       - user-service
+       - assets-service
+    volumes:
+      - ./reverse_proxy/config:/etc/nginx
+    ports:
+      - 80:80
+
+  # user api
+  user-service:
+    image: user-service
+    container_name: user-service
+    build:
+      context: ./users
+    env_file:
+      - ./users/env.list
+    ports:
+      - 8080:8080
+    restart: on-failure
+
+  # assets api
+  assets-service:
+    image: assets-service
+    container_name: assets-service
+    build:
+      context: ./assets
+    env_file:
+      - ./assets/env.list
+    depends_on:
+        - user-service
+    ports:
+      - 8000:8000
+    restart: on-failure
